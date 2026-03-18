@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Seuil de Revente à Perte — Synthèse</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #F0F4FF;
+    --white:   #FFFFFF;
+    --ink:     #12103A;
+    --ink-mid: #2E2B5F;
+
+    --galland: #FF6B35;
+    --jacob1:  #9B5DE5;
+    --jacob2:  #E84393;
+    --chatel:  #0090D4;
+    --egalim:  #00C49A;
+    --origin:  #F9C846;
+
+    --galland-bg: #FFF0EA;
+    --jacob1-bg:  #F3EAFF;
+    --jacob2-bg:  #FFEAF5;
+    --chatel-bg:  #E8F6FF;
+    --egalim-bg:  #E8FFF8;
+    --origin-bg:  #FFFBE8;
+
+    --border: rgba(18,16,58,0.1);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    padding: 3.5rem 5rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(155,93,229,0.35) 0%, transparent 70%);
+    top: -120px; right: 80px;
+    pointer-events: none;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,196,154,0.25) 0%, transparent 70%);
+    bottom: -80px; left: 200px;
+    pointer-events: none;
+  }
+
+  .header-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--origin);
+    background: rgba(249,200,70,0.15);
+    border: 1.5px solid rgba(249,200,70,0.4);
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 1.4rem;
+  }
+
+  header h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 900;
+    line-height: 1.1;
+    color: #fff;
+    white-space: nowrap;
+    letter-spacing: -0.5px;
+  }
+  header h1 em {
+    font-style: normal;
+    background: linear-gradient(90deg, var(--jacob2), var(--jacob1));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  header p.lead {
+    margin-top: 0.9rem;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.65);
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  /* ── NAV TABS ── */
+  .nav-tabs {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem 5rem;
+    background: var(--ink);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+    border-bottom: 3px solid rgba(255,255,255,0.06);
+  }
+
+  .nav-tab {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    padding: 0.55rem 1.2rem;
+    border: 2px solid transparent;
+    border-radius: 100px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-tab:hover { color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.07); }
+
+  .nav-tab.active[data-color="fondement"] { color: var(--origin);  background: rgba(249,200,70,0.15);  border-color: rgba(249,200,70,0.5); }
+  .nav-tab.active[data-color="galland"]   { color: var(--galland); background: rgba(255,107,53,0.15);  border-color: rgba(255,107,53,0.5); }
+  .nav-tab.active[data-color="jacob1"]    { color: var(--jacob1);  background: rgba(155,93,229,0.15);  border-color: rgba(155,93,229,0.5); }
+  .nav-tab.active[data-color="jacob2"]    { color: var(--jacob2);  background: rgba(232,67,147,0.15);  border-color: rgba(232,67,147,0.5); }
+  .nav-tab.active[data-color="chatel"]    { color: var(--chatel);  background: rgba(0,144,212,0.15);   border-color: rgba(0,144,212,0.5); }
+  .nav-tab.active[data-color="egalim"]    { color: var(--egalim);  background: rgba(0,196,154,0.15);   border-color: rgba(0,196,154,0.5); }
+
+  /* ── PANELS ── */
+  .panel {
+    display: none;
+    padding: 3rem 5rem;
+    animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  .panel.active { display: block; }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.97) translateY(10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* ── FONDEMENT GRID ── */
+  .fondement-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .f-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 1.8rem 2rem;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 20px rgba(18,16,58,0.07);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .f-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(18,16,58,0.12); }
+  .f-card.gold  { border-color: rgba(249,200,70,0.4);  background: var(--origin-bg); }
+  .f-card.blue  { border-color: rgba(0,144,212,0.3);   background: var(--chatel-bg); }
+  .f-card.red   { border-color: rgba(232,67,147,0.3);  background: var(--jacob2-bg); }
+  .f-card.green { border-color: rgba(0,196,154,0.3);   background: var(--egalim-bg); }
+  .f-card.full  { grid-column: 1 / -1; }
+
+  .f-card-label {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-bottom: 0.9rem;
+  }
+  .f-card.gold  .f-card-label { background: rgba(249,200,70,0.3);  color: #7a5200; }
+  .f-card.blue  .f-card-label { background: rgba(0,144,212,0.2);   color: #003870; }
+  .f-card.red   .f-card-label { background: rgba(232,67,147,0.15); color: #900040; }
+  .f-card.green .f-card-label { background: rgba(0,196,154,0.2);   color: #005040; }
+
+  .f-card h3 { font-size: 1.15rem; font-weight: 800; color: var(--ink); margin-bottom: 0.8rem; line-height: 1.3; }
+  .f-card p  { font-size: 0.92rem; line-height: 1.75; color: var(--ink-mid); font-weight: 500; }
+  .f-card p + p { margin-top: 0.65rem; }
+
+  .citation-block {
+    background: rgba(0,144,212,0.08);
+    border-left: 4px solid var(--chatel);
+    padding: 0.9rem 1.2rem;
+    margin-top: 1rem;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+  .citation-block p {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--ink);
+    line-height: 1.7;
+    font-weight: 400;
+    background: none; padding: 0; box-shadow: none;
+  }
+  .citation-block .source { font-family: 'Nunito', sans-serif; font-size: 0.7rem; color: #777; margin-top: 0.5rem; font-weight: 600; }
+
+  .exceptions-list { margin-top: 0.9rem; display: flex; flex-direction: column; gap: 0.55rem; }
+  .exc-item { display: flex; align-items: flex-start; gap: 0.7rem; font-size: 0.9rem; color: var(--ink-mid); font-weight: 600; line-height: 1.55; }
+  .exc-num { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--egalim); color: white; font-size: 0.65rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+
+  .sanction-badge {
+    display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem;
+    background: var(--ink); color: white; padding: 0.8rem 1.3rem;
+    border-radius: var(--radius-sm); margin-top: 1rem; font-size: 0.82rem; font-weight: 600;
+  }
+  .sanction-badge strong { font-size: 1.05rem; font-weight: 900; color: var(--origin); }
+
+  /* ── LOI PANELS ── */
+  .loi-panel-inner { max-width: 820px; }
+
+  .loi-meta {
+    display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;
+    background: var(--white); border-radius: var(--radius); padding: 1.4rem 2rem;
+    box-shadow: 0 4px 20px rgba(18,16,58,0.07); border-left: 6px solid;
+  }
+  .loi-galland-meta { border-left-color: var(--galland); }
+  .loi-jacob1-meta  { border-left-color: var(--jacob1);  }
+  .loi-jacob2-meta  { border-left-color: var(--jacob2);  }
+  .loi-chatel-meta  { border-left-color: var(--chatel);  }
+  .loi-egalim-meta  { border-left-color: var(--egalim);  }
+
+  .loi-annee-big { font-family: 'Space Mono', monospace; font-size: 3.5rem; font-weight: 700; line-height: 1; color: var(--ink); }
+  .loi-title-block h2 { font-size: 1.9rem; font-weight: 900; line-height: 1.1; color: var(--ink); }
+  .loi-title-block .loi-ref { font-size: 0.72rem; color: #888; font-weight: 700; margin-top: 0.3rem; }
+
+  .loi-section { margin-bottom: 1.8rem; }
+  .loi-section-label {
+    display: inline-block; font-size: 0.65rem; font-weight: 800; letter-spacing: 2.5px;
+    text-transform: uppercase; padding: 3px 10px; border-radius: 100px; margin-bottom: 0.8rem;
+    background: rgba(18,16,58,0.07); color: var(--ink-mid);
+  }
+  .loi-section p {
+    font-size: 0.95rem; line-height: 1.8; color: var(--ink-mid); font-weight: 500;
+    background: var(--white); border-radius: var(--radius-sm); padding: 1.2rem 1.5rem;
+    box-shadow: 0 2px 10px rgba(18,16,58,0.05);
+  }
+
+  .extrait { background: var(--white); border-radius: var(--radius-sm); padding: 1.4rem 1.8rem; box-shadow: 0 2px 10px rgba(18,16,58,0.05); }
+  .extrait p { font-family: 'Space Mono', monospace; font-size: 0.8rem; line-height: 1.8; color: var(--ink); background: none; padding: 0; box-shadow: none; }
+
+  .mecanisme { background: var(--white); border-radius: var(--radius-sm); padding: 1.5rem 1.8rem; box-shadow: 0 2px 10px rgba(18,16,58,0.05); }
+
+  .mec-formula { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+  .mec-box { padding: 0.5rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 700; white-space: nowrap; }
+  .mec-box.base   { background: rgba(18,16,58,0.07); color: var(--ink); }
+  .mec-box.minus  { background: var(--galland-bg); color: #8a2500; border: 2px solid var(--galland); }
+  .mec-box.minus2 { background: var(--jacob1-bg);  color: #4a1a90; border: 2px solid var(--jacob1); }
+  .mec-box.minus3 { background: var(--jacob2-bg);  color: #900040; border: 2px solid var(--jacob2); }
+  .mec-box.minus4 { background: var(--chatel-bg);  color: #003870; border: 2px solid var(--chatel); }
+  .mec-box.plus   { background: var(--egalim-bg);  color: #005040; border: 2px solid var(--egalim); }
+  .mec-box.result { font-weight: 900; font-size: 0.95rem; padding: 0.55rem 1.2rem; }
+  .mec-op { font-weight: 900; font-size: 1.2rem; color: var(--ink-mid); }
+
+  .mec-rules { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1rem; padding-top: 1rem; border-top: 2px dashed rgba(18,16,58,0.1); }
+  .mec-rule { display: flex; align-items: flex-start; gap: 0.7rem; font-size: 0.9rem; line-height: 1.65; color: var(--ink-mid); font-weight: 600; }
+  .mec-rule-icon { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: rgba(18,16,58,0.07); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; margin-top: 1px; }
+
+  .impact-strip { margin-top: 1.5rem; padding: 1.1rem 1.5rem; border-radius: var(--radius-sm); font-size: 0.92rem; line-height: 1.75; font-weight: 700; }
+
+  /* ── TIMELINE ── */
+  .timeline-wrapper { position: relative; padding: 0.5rem 0; }
+  .tl-line {
+    position: absolute; left: 2.8rem; top: 0; bottom: 0; width: 3px; border-radius: 3px;
+    background: linear-gradient(to bottom, var(--origin) 0%, var(--galland) 20%, var(--jacob1) 40%, var(--jacob2) 60%, var(--chatel) 80%, var(--egalim) 100%);
+    opacity: 0.3;
+  }
+  .tl-item { display: flex; gap: 2rem; margin-bottom: 2rem; cursor: pointer; transition: transform 0.2s; }
+  .tl-item:hover { transform: translateX(6px); }
+  .tl-dot-wrap { flex-shrink: 0; width: 5.6rem; display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+  .tl-dot { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 700; color: white; z-index: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+  .tl-year { font-size: 0.65rem; font-weight: 800; color: var(--ink-mid); }
+  .tl-content { flex: 1; background: var(--white); border-radius: var(--radius-sm); padding: 1.2rem 1.6rem; box-shadow: 0 3px 16px rgba(18,16,58,0.07); border: 2px solid transparent; transition: box-shadow 0.2s; }
+  .tl-item:hover .tl-content { box-shadow: 0 6px 24px rgba(18,16,58,0.13); }
+  .tl-content h3 { font-size: 1.1rem; font-weight: 900; color: var(--ink); margin-bottom: 0.35rem; }
+  .tl-content p { font-size: 0.9rem; color: var(--ink-mid); font-weight: 500; line-height: 1.65; }
+  .tl-badge { display: inline-block; margin-top: 0.7rem; font-size: 0.68rem; font-weight: 800; padding: 3px 10px; border-radius: 100px; background: rgba(18,16,58,0.07); color: var(--ink-mid); }
+  .tl-link { margin-top: 0.5rem; font-size: 0.8rem; font-weight: 800; display: inline-flex; align-items: center; gap: 0.3rem; cursor: pointer; transition: gap 0.2s; }
+  .tl-link:hover { gap: 0.6rem; }
+
+  /* helpers */
+  .c-galland{color:var(--galland)} .c-jacob1{color:var(--jacob1)} .c-jacob2{color:var(--jacob2)} .c-chatel{color:var(--chatel)} .c-egalim{color:var(--egalim)}
+  .bg-galland{background:var(--galland)} .bg-jacob1{background:var(--jacob1)} .bg-jacob2{background:var(--jacob2)} .bg-chatel{background:var(--chatel)} .bg-egalim{background:var(--egalim)} .bg-origin{background:var(--origin)}
+  .border-galland{border-color:rgba(255,107,53,0.4)!important} .border-jacob1{border-color:rgba(155,93,229,0.4)!important} .border-jacob2{border-color:rgba(232,67,147,0.4)!important} .border-chatel{border-color:rgba(0,144,212,0.4)!important} .border-egalim{border-color:rgba(0,196,154,0.4)!important}
+  .strip-galland{background:var(--galland-bg);border:2px solid rgba(255,107,53,0.3);color:#6a2000}
+  .strip-jacob1{background:var(--jacob1-bg);border:2px solid rgba(155,93,229,0.3);color:#3a0a80}
+  .strip-jacob2{background:var(--jacob2-bg);border:2px solid rgba(232,67,147,0.3);color:#7a0040}
+  .strip-chatel{background:var(--chatel-bg);border:2px solid rgba(0,144,212,0.3);color:#003060}
+  .strip-egalim{background:var(--egalim-bg);border:2px solid rgba(0,196,154,0.3);color:#004030}
+
+  @media(max-width:768px){
+    header,.panel{padding:2.5rem 1.5rem}
+    .nav-tabs{padding:.8rem 1.5rem}
+    .fondement-grid{grid-template-columns:1fr}
+    .f-card.full{grid-column:1}
+    header h1,header p.lead{white-space:normal}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-tag">⚖️ Droit commercial · Relations commerciales</div>
+  <h1>Le Seuil de <em>Revente à Perte</em></h1>
+  <p class="lead">Fondement juridique et évolution législative — de l'ordonnance de 1986 à la loi EGalim et ses prolongations.</p>
+</header>
+
+<nav class="nav-tabs">
+  <button class="nav-tab active" data-panel="fondement" data-color="fondement" onclick="switchPanel('fondement',this)">📋 Fondement juridique</button>
+  <button class="nav-tab" data-panel="galland"  data-color="galland"  onclick="switchPanel('galland',this)">🟠 Loi Galland — 1996</button>
+  <button class="nav-tab" data-panel="jacob1"   data-color="jacob1"   onclick="switchPanel('jacob1',this)">🟣 Jacob-Dutreil 1 — 2006</button>
+  <button class="nav-tab" data-panel="jacob2"   data-color="jacob2"   onclick="switchPanel('jacob2',this)">🩷 Jacob-Dutreil 2 — 2007</button>
+  <button class="nav-tab" data-panel="chatel"   data-color="chatel"   onclick="switchPanel('chatel',this)">🔵 LME / Châtel — 2008</button>
+  <button class="nav-tab" data-panel="egalim"   data-color="egalim"   onclick="switchPanel('egalim',this)">🟢 EGalim — 2018</button>
+  <button class="nav-tab" data-panel="timeline" data-color="fondement" onclick="switchPanel('timeline',this)">⏱ Chronologie</button>
+</nav>
+
+<div class="panels">
+
+  <!-- FONDEMENT -->
+  <div class="panel active" id="panel-fondement">
+    <div class="fondement-grid">
+      <div class="f-card gold">
+        <div class="f-card-label">Origines</div>
+        <h3>Une interdiction née en 1963</h3>
+        <p>L'interdiction de la revente à perte est introduite par la <strong>loi du 2 juillet 1963</strong>, pour protéger les petits commerces de détail face à la montée en puissance des grandes surfaces.</p>
+        <p>Elle est ensuite consacrée à l'article 31 de l'<strong>ordonnance du 1er décembre 1986</strong> relative à la liberté des prix et de la concurrence, avant d'être intégrée au Code de commerce.</p>
+      </div>
+      <div class="f-card blue">
+        <div class="f-card-label">Texte en vigueur</div>
+        <h3>Article L.442-5 du Code de commerce</h3>
+        <div class="citation-block">
+          <p>« Est interdit le fait, pour tout commerçant, de revendre ou d'annoncer la revente d'un produit en l'état à un prix inférieur à son prix d'achat effectif. »</p>
+          <p class="source">Ord. n° 2019-359 du 24 avril 2019, codifiant ord. n° 86-1243 du 1er déc. 1986</p>
+        </div>
+        <div class="sanction-badge">
+          <span>Sanction :</span><strong>75 000 €</strong><span>personne physique</span><strong>375 000 €</strong><span>personne morale</span>
+        </div>
+      </div>
+      <div class="f-card red">
+        <div class="f-card-label">Ratio legis</div>
+        <h3>Pourquoi cette interdiction ?</h3>
+        <p>La logique est celle de la <strong>concurrence loyale</strong> : vendre en dessous du coût d'achat permet à un distributeur d'évincer ses concurrents en pratiquant des prix artificiellement bas, pour les remonter ensuite une fois le marché capté — pratique dite de <em>prédation par les prix</em>.</p>
+        <p>L'interdiction porte uniquement sur la <strong>revente en l'état</strong>, sans transformation du produit.</p>
+      </div>
+      <div class="f-card green">
+        <div class="f-card-label">Exceptions légales</div>
+        <h3>7 exceptions prévues par la loi</h3>
+        <div class="exceptions-list">
+          <div class="exc-item"><div class="exc-num">1</div><span>Ventes volontaires ou forcées motivées par la cessation ou le changement d'une activité commerciale</span></div>
+          <div class="exc-item"><div class="exc-num">2</div><span>Produits dont la vente présente un caractère saisonnier marqué, pendant la période terminale de la saison et dans l'intervalle compris entre deux saisons de vente</span></div>
+          <div class="exc-item"><div class="exc-num">3</div><span>Produits qui ne répondent plus à la demande générale en raison de l'évolution de la mode ou de l'apparition de perfectionnements techniques</span></div>
+          <div class="exc-item"><div class="exc-num">4</div><span>Produits dont le réapprovisionnement s'est effectué en baisse — le prix d'achat effectif est alors remplacé par le prix résultant de la nouvelle facture</span></div>
+          <div class="exc-item"><div class="exc-num">5</div><span>Alignement sur le prix légalement pratiqué par un concurrent dans la même zone d'activité (magasins ≤ 300 m² pour les aliments, ≤ 1 000 m² pour les non-alimentaires)</span></div>
+          <div class="exc-item"><div class="exc-num">6</div><span>Produits périssables menacés d'altération rapide — à condition que l'offre ne fasse l'objet d'aucune publicité à l'extérieur du point de vente</span></div>
+          <div class="exc-item"><div class="exc-num">7</div><span>Produits soldés au sens de l'article L. 310-3 du Code de commerce</span></div>
+        </div>
+      </div>
+      <div class="f-card gold full">
+        <div class="f-card-label">Tension avec le droit européen</div>
+        <h3>La CJUE et la Cour de cassation (2017)</h3>
+        <p>La <strong>CJUE</strong> (19 oct. 2017, aff. C-295/16) a jugé qu'une interdiction générale de la revente à perte visant à protéger les consommateurs n'est pas conforme à la directive 2005/29/CE sur les pratiques commerciales déloyales. Cependant, la <strong>Cour de cassation française</strong> (nov. 2017) a précisé que cette directive ne s'applique pas aux transactions entre professionnels, ce qui maintient la pleine applicabilité de l'interdiction dans les relations B2B, qui sont celles visées par L.442-5.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- GALLAND -->
+  <div class="panel" id="panel-galland">
+    <div class="loi-panel-inner">
+      <div class="loi-meta loi-galland-meta">
+        <div class="loi-annee-big c-galland">1996</div>
+        <div class="loi-title-block">
+          <h2>Loi Galland</h2>
+          <div class="loi-ref">n° 96-588 du 1er juillet 1996 · Art. 1er</div>
+        </div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Extrait du texte</div>
+        <div class="extrait"><p>« Est interdit le fait, pour tout commerçant, de revendre un produit en l'état à un prix inférieur à son prix d'achat effectif. Le prix d'achat effectif est le <strong>prix unitaire net figurant sur la facture d'achat</strong>. »</p></div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Principe de calcul du SRP</div>
+        <div class="mecanisme">
+          <div class="mec-formula">
+            <div class="mec-box base">Prix brut facturé</div><div class="mec-op">−</div>
+            <div class="mec-box minus">RRR sur facture</div><div class="mec-op">=</div>
+            <div class="mec-box result c-galland" style="background:var(--galland-bg);border:2px solid var(--galland);">SRP = Prix net facturé</div>
+          </div>
+          <div class="mec-rules">
+            <div class="mec-rule"><div class="mec-rule-icon">✕</div><span>Les <strong>marges arrière</strong> (coopération commerciale, remises différées…) ne sont <strong>pas prises en compte</strong> dans le calcul du SRP.</span></div>
+            <div class="mec-rule"><div class="mec-rule-icon">→</div><span>Le SRP est égal au seul prix unitaire net sur facture, quels que soient les avantages financiers hors facture obtenus par le distributeur.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Contexte et enjeux</div>
+        <p>La loi Galland avait pour ambition initiale de clarifier les règles de facturation et de protéger les fournisseurs. Mais en excluant les marges arrière du calcul, elle a engendré un effet pervers majeur : les distributeurs ont massivement développé les <strong>avantages hors facture</strong>, sachant qu'ils ne réduisaient pas leur prix plancher légal. Le SRP légal se décorrèle ainsi du coût d'achat réel, garantissant aux distributeurs une marge structurelle confortable sans que cela profite aux consommateurs.</p>
+      </div>
+      <div class="impact-strip strip-galland">💡 Ce « décrochage » entre prix facturé et coût réel est le problème central que toutes les réformes suivantes chercheront à corriger en réintégrant progressivement les marges arrière dans le calcul.</div>
+    </div>
+  </div>
+
+  <!-- JACOB-DUTREIL 1 -->
+  <div class="panel" id="panel-jacob1">
+    <div class="loi-panel-inner">
+      <div class="loi-meta loi-jacob1-meta">
+        <div class="loi-annee-big c-jacob1">2006</div>
+        <div class="loi-title-block">
+          <h2>Amendement Jacob-Dutreil 1</h2>
+          <div class="loi-ref">Loi n° 2005-882 du 2 août 2005 (PME) · Décret d'application 2006 · Circ. DGCCRF déc. 2005</div>
+        </div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Extrait du texte</div>
+        <div class="extrait"><p>« Le prix d'achat effectif est minoré des avantages financiers consentis par le vendeur exprimés en pourcentage du prix unitaire net du produit, <strong>dans la mesure où ils excèdent un seuil de 20 %</strong> de ce même prix, sans toutefois que la minoration puisse <strong>dépasser 15 %</strong> dudit prix. Le montant minorant le prix unitaire net ne peut excéder <strong>40 % du montant total</strong> de l'ensemble des autres avantages financiers consentis. »</p></div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Principe de calcul du SRP</div>
+        <div class="mecanisme">
+          <div class="mec-formula">
+            <div class="mec-box base">Prix brut</div><div class="mec-op">−</div>
+            <div class="mec-box minus">RRR facture</div><div class="mec-op">−</div>
+            <div class="mec-box minus2">Partie déductible des MA</div><div class="mec-op">=</div>
+            <div class="mec-box result c-jacob1" style="background:var(--jacob1-bg);border:2px solid var(--jacob1);">SRP</div>
+          </div>
+          <div class="mec-rules">
+            <div class="mec-rule"><div class="mec-rule-icon">①</div><span><strong>Seuil de franchise à 20 %</strong> : seule la fraction des marges arrière (MA) <em>excédant 20 % du prix net</em> est déductible. En-deçà, elles restent hors calcul.</span></div>
+            <div class="mec-rule"><div class="mec-rule-icon">②</div><span><strong>Double plafond cumulatif</strong> : la déduction ne peut dépasser ni <strong>15 % du prix net</strong> (plafond absolu), ni <strong>40 % du total des marges arrière</strong> (butoir relatif). On retient le <em>montant le plus faible</em> des deux.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Portée et limites</div>
+        <p>Il s'agit d'une <strong>première brèche</strong> dans la logique Galland : pour la première fois, une fraction des marges arrière entre dans le calcul du SRP. Mais le mécanisme reste volontairement prudent — le seuil de 20 % et le double plafond limitent fortement l'effet réel. Les distributeurs pratiquant des marges arrière inférieures à 20 % ne sont pas du tout concernés.</p>
+      </div>
+      <div class="impact-strip strip-jacob1">💡 L'amendement Jacob-Dutreil 1 pose le <em>principe</em> de la déductibilité partielle des marges arrière, sans remettre fondamentalement en cause la logique Galland. Les garde-fous (franchise 20 % + double plafond) sont intentionnellement restrictifs.</div>
+    </div>
+  </div>
+
+  <!-- JACOB-DUTREIL 2 -->
+  <div class="panel" id="panel-jacob2">
+    <div class="loi-panel-inner">
+      <div class="loi-meta loi-jacob2-meta">
+        <div class="loi-annee-big c-jacob2">2007</div>
+        <div class="loi-title-block">
+          <h2>Amendement Jacob-Dutreil 2</h2>
+          <div class="loi-ref">Loi n° 2006-1772 du 30 déc. 2006 · Entrée en vigueur : 1er mars 2007</div>
+        </div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Extrait du texte</div>
+        <div class="extrait"><p>« Le seuil au-delà duquel les avantages financiers sont pris en compte dans le calcul du prix d'achat effectif est <strong>abaissé de 20 % à 15 %</strong>, afin d'accroître la part des marges arrière intégrée dans le seuil de revente à perte. »</p></div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Principe de calcul du SRP</div>
+        <div class="mecanisme">
+          <div class="mec-formula">
+            <div class="mec-box base">Prix brut</div><div class="mec-op">−</div>
+            <div class="mec-box minus">RRR facture</div><div class="mec-op">−</div>
+            <div class="mec-box minus3">Partie déductible des MA (seuil 15 %)</div><div class="mec-op">=</div>
+            <div class="mec-box result c-jacob2" style="background:var(--jacob2-bg);border:2px solid var(--jacob2);">SRP</div>
+          </div>
+          <div class="mec-rules">
+            <div class="mec-rule"><div class="mec-rule-icon">①</div><span><strong>Seuil de franchise abaissé à 15 %</strong> : la tranche des MA comprise entre 15 % et 20 % du prix net, jusqu'ici exclue, devient désormais déductible. Le champ s'élargit mécaniquement.</span></div>
+            <div class="mec-rule"><div class="mec-rule-icon">②</div><span>La structure du <strong>double plafond</strong> est maintenue dans son principe, mais son effet limitant diminue à mesure que la franchise s'abaisse.</span></div>
+            <div class="mec-rule"><div class="mec-rule-icon">→</div><span>Le SRP diminue davantage qu'en 2006, traduisant une volonté de <strong>poursuivre la réintégration progressive</strong> des marges arrière.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Portée dans la dynamique législative</div>
+        <p>Jacob-Dutreil 2 franchit un pas supplémentaire : l'abaissement de 20 % à 15 % traduit l'insatisfaction du législateur face aux effets limités de 2006. La tendance est désormais clairement tracée vers la <strong>déductibilité totale</strong>, consacrée par la LME en 2008.</p>
+      </div>
+      <div class="impact-strip strip-jacob2">💡 Les deux amendements Jacob-Dutreil (2006-2007) forment un <em>mouvement progressif</em> de réintégration des MA. Ils constituent la phase transitoire entre la logique Galland (exclusion totale) et la logique LME (inclusion totale).</div>
+    </div>
+  </div>
+
+  <!-- CHATEL / LME -->
+  <div class="panel" id="panel-chatel">
+    <div class="loi-panel-inner">
+      <div class="loi-meta loi-chatel-meta">
+        <div class="loi-annee-big c-chatel">2008</div>
+        <div class="loi-title-block">
+          <h2>Loi Châtel — LME</h2>
+          <div class="loi-ref">Loi n° 2008-776 de Modernisation de l'Économie du 4 août 2008</div>
+        </div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Extrait du texte</div>
+        <div class="extrait"><p>« Le prix d'achat effectif est le prix unitaire net figurant sur la facture d'achat, <strong>minoré de l'ensemble des avantages financiers</strong> consentis par le vendeur. Le prix ainsi obtenu constitue le <em>"triple net"</em>. »</p></div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Principe de calcul du SRP — Le "Triple Net"</div>
+        <div class="mecanisme">
+          <div class="mec-formula">
+            <div class="mec-box base">Prix brut</div><div class="mec-op">−</div>
+            <div class="mec-box minus">RRR facture</div><div class="mec-op">−</div>
+            <div class="mec-box minus4">100 % des marges arrière</div><div class="mec-op">=</div>
+            <div class="mec-box result c-chatel" style="background:var(--chatel-bg);border:2px solid var(--chatel);">SRP "Triple net"</div>
+          </div>
+          <div class="mec-rules">
+            <div class="mec-rule"><div class="mec-rule-icon">✓</div><span><strong>Déductibilité totale et sans plafond</strong> : l'intégralité des avantages financiers hors facture (coopération commerciale, remises différées, NIP…) est déduite. Ni seuil de franchise, ni plafond.</span></div>
+            <div class="mec-rule"><div class="mec-rule-icon">→</div><span>Le prix plancher descend au plus proche du <em>coût réel d'achat</em>, permettant aux distributeurs de répercuter la baisse sur leurs prix de vente et d'intensifier la <strong>guerre des prix</strong>.</span></div>
+            <div class="mec-rule"><div class="mec-rule-icon">!</div><span>Le terme "triple net" désigne les trois niveaux de déduction successifs : remises sur facture, remises différées, puis autres avantages financiers.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Rupture et conséquences</div>
+        <p>La LME constitue une <strong>rupture majeure</strong> : le problème des marges arrière est techniquement résolu en les intégrant toutes. Cependant, en abaissant le prix plancher, la loi intensifie les négociations et exerce une pression croissante sur les fournisseurs et producteurs agricoles pour qu'ils consentent davantage d'avantages hors facture.</p>
+      </div>
+      <div class="impact-strip strip-chatel">💡 La LME marque la fin de la logique Galland. Elle atteint son objectif de baisse des prix à la consommation — mais ouvre la voie aux excès inverses sur la chaîne agricole, qui justifieront EGalim dix ans plus tard.</div>
+    </div>
+  </div>
+
+  <!-- EGALIM -->
+  <div class="panel" id="panel-egalim">
+    <div class="loi-panel-inner">
+      <div class="loi-meta loi-egalim-meta">
+        <div class="loi-annee-big c-egalim">2018</div>
+        <div class="loi-title-block">
+          <h2>Loi EGalim</h2>
+          <div class="loi-ref">Loi n° 2018-938 du 30 oct. 2018 · Ord. n° 2018-1128 du 12 déc. 2018</div>
+        </div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Extrait du texte</div>
+        <div class="extrait"><p>« Pour les <strong>denrées alimentaires</strong> et les produits destinés à l'alimentation des animaux de compagnie, le seuil de revente à perte est <strong>relevé de 10 %</strong>. Cette disposition, initialement expérimentale, vise à améliorer la rémunération des producteurs agricoles en remontant les prix payés aux fournisseurs. »</p></div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Principe de calcul du SRP</div>
+        <div class="mecanisme">
+          <div class="mec-formula">
+            <div class="mec-box base">SRP triple net (LME)</div><div class="mec-op">×</div>
+            <div class="mec-box plus">1,10</div><div class="mec-op">=</div>
+            <div class="mec-box result c-egalim" style="background:var(--egalim-bg);border:2px solid var(--egalim);">SRP EGalim</div>
+          </div>
+          <div class="mec-rules">
+            <div class="mec-rule"><div class="mec-rule-icon">!</div><span><strong>Champ limité</strong> : le relèvement de 10 % ne s'applique qu'aux <em>denrées alimentaires</em> et aux <em>produits pour animaux de compagnie</em>. Pour les autres produits, le SRP reste calculé selon la méthode triple net LME.</span></div>
+            <div class="mec-rule"><div class="mec-rule-icon">→</div><span><strong>Inversion de tendance</strong> : après une décennie de baisse, EGalim remonte le SRP de 10 % pour créer une marge supplémentaire censée remonter jusqu'aux producteurs agricoles.</span></div>
+            <div class="mec-rule"><div class="mec-rule-icon">⏱</div><span><strong>Dispositif expérimental prolongé</strong> : reconduit par la loi ASAP (2020), ajusté par EGalim 2 (2021), puis prolongé jusqu'en 2025 — une proposition de loi (fév. 2025) envisage une prolongation jusqu'en 2026-2028.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="loi-section">
+        <div class="loi-section-label">Débat sur l'efficacité</div>
+        <p>Le dispositif est <strong>contesté</strong> sur deux fronts. L'UFC-Que Choisir souligne son effet inflationniste (estimé à +0,3 % en grandes surfaces) sans preuve que les marges supplémentaires parviennent aux agriculteurs. Les partisans font valoir que le relèvement du SRP est une condition nécessaire — bien qu'insuffisante — pour rééquilibrer les négociations commerciales.</p>
+      </div>
+      <div class="impact-strip strip-egalim">💡 EGalim introduit une logique nouvelle : le SRP n'est plus seulement un outil de régulation concurrentielle, mais devient un <em>instrument de politique agricole</em>, ce qui soulève une question de cohérence avec l'objectif initial de la réglementation.</div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="panel" id="panel-timeline">
+    <div class="timeline-wrapper">
+      <div class="tl-line"></div>
+      <div class="tl-item" onclick="switchPanel('fondement',document.querySelector('[data-panel=fondement]'))">
+        <div class="tl-dot-wrap"><div class="tl-dot bg-origin" style="color:var(--ink)">1963</div><div class="tl-year">Origine</div></div>
+        <div class="tl-content" style="border:2px solid rgba(249,200,70,0.4)">
+          <h3>Loi du 2 juillet 1963</h3>
+          <p>Première interdiction de la revente à perte, renforcée par l'ordonnance du 1er décembre 1986 et codifiée à l'art. L.442-5 du Code de commerce.</p>
+          <span class="tl-badge">Fondement juridique</span>
+        </div>
+      </div>
+      <div class="tl-item" onclick="switchPanel('galland',document.querySelector('[data-panel=galland]'))">
+        <div class="tl-dot-wrap"><div class="tl-dot bg-galland">96</div><div class="tl-year">1996</div></div>
+        <div class="tl-content border-galland">
+          <h3 class="c-galland">Loi Galland</h3>
+          <p>SRP = prix net facturé uniquement. Les marges arrière sont exclues du calcul, créant un décrochage structurel entre prix plancher légal et coût d'achat réel.</p>
+          <span class="tl-badge">Exclusion totale des marges arrière</span>
+          <div class="tl-link c-galland">Voir le détail →</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="switchPanel('jacob1',document.querySelector('[data-panel=jacob1]'))">
+        <div class="tl-dot-wrap"><div class="tl-dot bg-jacob1">06</div><div class="tl-year">2006</div></div>
+        <div class="tl-content border-jacob1">
+          <h3 class="c-jacob1">Jacob-Dutreil 1</h3>
+          <p>Première intégration partielle des marges arrière, encadrée par un seuil de franchise à 20 % et un double plafond (15 % / 40 %).</p>
+          <span class="tl-badge">Déductibilité partielle — seuil 20 %</span>
+          <div class="tl-link c-jacob1">Voir le détail →</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="switchPanel('jacob2',document.querySelector('[data-panel=jacob2]'))">
+        <div class="tl-dot-wrap"><div class="tl-dot bg-jacob2">07</div><div class="tl-year">2007</div></div>
+        <div class="tl-content border-jacob2">
+          <h3 class="c-jacob2">Jacob-Dutreil 2</h3>
+          <p>Le seuil de franchise est abaissé de 20 % à 15 %, élargissant mécaniquement la part déductible des marges arrière.</p>
+          <span class="tl-badge">Seuil abaissé à 15 %</span>
+          <div class="tl-link c-jacob2">Voir le détail →</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="switchPanel('chatel',document.querySelector('[data-panel=chatel]'))">
+        <div class="tl-dot-wrap"><div class="tl-dot bg-chatel">08</div><div class="tl-year">2008</div></div>
+        <div class="tl-content border-chatel">
+          <h3 class="c-chatel">LME / Châtel</h3>
+          <p>Rupture majeure : le "triple net" intègre la totalité des avantages financiers. Le prix plancher atteint son niveau le plus bas. Fin de la logique Galland.</p>
+          <span class="tl-badge">Déductibilité totale — Triple net</span>
+          <div class="tl-link c-chatel">Voir le détail →</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="switchPanel('egalim',document.querySelector('[data-panel=egalim]'))">
+        <div class="tl-dot-wrap"><div class="tl-dot bg-egalim">18</div><div class="tl-year">2018</div></div>
+        <div class="tl-content border-egalim">
+          <h3 class="c-egalim">Loi EGalim</h3>
+          <p>Inversion de tendance : le SRP est relevé de 10 % pour les denrées alimentaires et le petfood. Dispositif expérimental reconduit plusieurs fois depuis.</p>
+          <span class="tl-badge">SRP + 10 % pour les aliments</span>
+          <div class="tl-link c-egalim">Voir le détail →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function switchPanel(id, tabEl) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    const tab = document.querySelector('[data-panel="' + id + '"]');
+    if (tab) tab.classList.add('active');
+  }
+</script>
+</body>
+</html>
